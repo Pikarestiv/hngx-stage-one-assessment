@@ -5,29 +5,41 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get("/api", (req, res) => {
-  const { slack_name, track } = req.query;
+  try {
+    // Destructure request query for parameters
+    const { slack_name, track } = req.query;
 
-  // Get current day of the week
-  const current_day = moment().format("dddd");
+    // Handle possible missing parameter
+    if (!slack_name || !track) {
+      throw new Error("Both slack_name and track parameters are required.");
+    }
 
-  // Get current UTC time
-  const utc_time = moment().utc().format();
+    // Get current day of the week
+    const current_day = moment().format("dddd");
 
-  // GitHub URLs
-  const github_repo_url = "https://github.com/pikarestiv/hngx-stage-one-assessment";
-  const github_file_url = `${github_repo_url}/`;
+    // Get current UTC time
+    const utc_time = moment().utc().format();
 
-  const response = {
-    slack_name,
-    current_day,
-    utc_time,
-    track,
-    github_file_url,
-    github_repo_url,
-    status_code: 200,
-  };
+    // GitHub URLs
+    const github_repo_url = "https://github.com/pikarestiv/hngx-stage-one-assessment";
+    const github_file_url = `${github_repo_url}/blob/main/server.js`;
 
-  res.json(response);
+    //JSON response
+    const response = {
+      slack_name,
+      current_day,
+      utc_time,
+      track,
+      github_file_url,
+      github_repo_url,
+      status_code: 200,
+    };
+
+    res.json(response);
+  } catch (error) {
+    // Handle errors
+    res.status(400).json({ error: error.message });
+  }
 });
 
 app.listen(port, () => {
