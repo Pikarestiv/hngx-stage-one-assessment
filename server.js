@@ -4,6 +4,10 @@ const moment = require("moment");
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.get("/", (req, res) => {
+  res.json("Welcome! Hit the /api endpoint with the appropriate parameters to get results");
+});
+
 app.get("/api", (req, res) => {
   try {
     // Destructure request query for parameters
